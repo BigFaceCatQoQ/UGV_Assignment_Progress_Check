@@ -6,6 +6,10 @@
 #include <smstructs.h>
 #include "GPS.h"
 
+using namespace System;
+using namespace System::Diagnostics;
+using namespace System::Threading;
+
 int GPS::connect(String^ hostName, int portNumber)
 {
 	// YOUR CODE HERE
@@ -78,9 +82,6 @@ unsigned long CalculateBlockCRC32(unsigned long ulCount, /* Number of bytes in t
 	return(ulCRC);
 }
 
-using namespace System;
-using namespace System::Diagnostics;
-using namespace System::Threading;
 
 int main()
 {

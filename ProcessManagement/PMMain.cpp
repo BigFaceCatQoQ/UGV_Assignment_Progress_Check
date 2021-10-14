@@ -54,7 +54,7 @@ int main()
 		if (Process::GetProcessesByName(ProcessList[i].ModuleName)->Length == 0) 
 		{
 			ProcessList[i].ProcessName = gcnew Process;
-			ProcessList[i].ProcessName->StartInfo->WorkingDirectory = "C:\\Users\\z5266234\\source\\repos\\UGV_Assignment-ProgressCheck\\Executable";
+			ProcessList[i].ProcessName->StartInfo->WorkingDirectory = "C:\\Users\\Cjl\\source\\repos\\UGV_Assignment_Progress_Check\\Executable";
 			ProcessList[i].ProcessName->StartInfo->FileName = ProcessList[i].ModuleName;
 			ProcessList[i].ProcessName->Start();
 			Console::WriteLine("The process " + ProcessList[i].ModuleName + ".exe started");
