@@ -1,4 +1,5 @@
 #using <System.dll>
+#define _USE_MATH_DEFINES
 
 #include <Windows.h>
 #include <conio.h>
@@ -7,6 +8,7 @@
 #include <string>
 #include <SMObject.h>
 #include <smstructs.h>
+#include <cmath>
 
 using namespace System;
 using namespace System::Net::Sockets;
@@ -105,21 +107,26 @@ int main()
 			// Convert incoming data from an array of unsigned char bytes to an ASCII string
 			ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
 			// Print the received string on the screen
-			std::array<std::string> ResultDaTa{};
-			int counter = 0;
-			for (int i = 0; i < ResponseData->Length; i++)
+			array<wchar_t>^ Space = { ' ' };
+			array<String^>^ StringArray = ResponseData->Split(Space);
+
+			double StartAngle = System::Convert::ToInt32(StringArray[23], 16);
+			double Resolution = System::Convert::ToInt32(StringArray[24], 16) / 10000.0;
+			int NumRanges = System::Convert::ToInt32(StringArray[25], 16);
+
+			array<double>^ Range = gcnew array<double>(NumRanges);
+			array<double>^ RangeX = gcnew array<double>(NumRanges);
+			array<double>^ RangeY = gcnew array<double>(NumRanges);
+
+			for (int i = 0; i < NumRanges; i++)
 			{
-				if (ResponseData[i] == ' ')
-				{
-					counter++;
-				}
-				else
-				{
-					ResultData[counter] += ResponseData[i];
-				}
+				Range[i] = System::Convert::ToInt32(StringArray[26 + i], 16);
+				RangeX[i] = Range[i] * sin(i * Resolution * M_PI / 180);
+				RangeY[i] = -Range[i] * cos(i * Resolution * M_PI / 180);
+
+				Console::WriteLine("(" + RangeX[i] + ", " + RangeY[i] + ")");
 			}
-			
-			Console::WriteLine(ResponseData);
+
 
 		}
 		else
@@ -141,7 +148,6 @@ int main()
 	Stream->Close();
 	Client->Close();
 
-	Console::ReadKey();
 	Console::ReadKey();
 
 
