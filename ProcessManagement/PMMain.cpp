@@ -19,7 +19,7 @@ value struct UGVProcesses
 	Process^ ProcessName;
 };
 
-int main() 
+int main()
 {
 	// Tele-operation
 	//Declaration + Initialization
@@ -32,7 +32,7 @@ int main()
 
 	array<UGVProcesses>^ ProcessList = gcnew array<UGVProcesses>
 	{
-		{ "Laser",   1, 0, 10, gcnew Process },
+		{ "Laser", 1, 0, 10, gcnew Process },
 		{ "Display", 1, 0, 10, gcnew Process },
 		{ "Vehicle", 1, 0, 10, gcnew Process },
 		{ "GPS",     0, 0, 10, gcnew Process },
@@ -51,41 +51,45 @@ int main()
 
 	for (int i = 0; i < ProcessList->Length; i++)
 	{
-		if (Process::GetProcessesByName(ProcessList[i].ModuleName)->Length == 0) 
+		if (Process::GetProcessesByName(ProcessList[i].ModuleName)->Length == 0)
 		{
 			ProcessList[i].ProcessName = gcnew Process;
-			ProcessList[i].ProcessName->StartInfo->WorkingDirectory = "C:\\Users\\Cjl\\source\\repos\\UGV_Assignment_Progress_Check\\Executable";
+			ProcessList[i].ProcessName->StartInfo->WorkingDirectory = "C:\\Users\\Cjl\\source\\repos\\UGV_Assignment\\Executable";
 			ProcessList[i].ProcessName->StartInfo->FileName = ProcessList[i].ModuleName;
 			ProcessList[i].ProcessName->Start();
 			Console::WriteLine("The process " + ProcessList[i].ModuleName + ".exe started");
 
 		}
 	}
-	
+
 
 
 	// Main loop
 
-	while (!_kbhit()) 
+	while (PMData->Shutdown.Status != 0xFF)
 	{
 		QueryPerformanceCounter((LARGE_INTEGER*)&Counter);
 		PMData->PMTimeStamp = PMTimeStamp = (double)Counter / (double)(Frequency) * 1000; //ms
 		PMData->Ready = true;
 		// Checking for heartbeats
 		// iterate through all the processes
-		
-		status_counter = 0x01;
-		for (int i = 0; i < ProcessList[i].ModuleName->Length; i++)
+
+		// Test to show heartbeat flags
+		//Console::WriteLine(PMData->Heartbeat.Flags.Laser + " " + PMData->Heartbeat.Flags.Display + " " + PMData->Heartbeat.Flags.Vehicle + " " + PMData->Heartbeat.Flags.GPS + " " + PMData->Heartbeat.Flags.Camera);
+
+
+		status_counter = 1;
+		for (int i = 0; i < ProcessList->Length; i++)
 		{
 			reference = (status_counter << i);
 			// is the heartbeat bit for process[i] up?
-			if ((PMData->Heartbeat.Status & reference) != 0x00)
+			if ((PMData->Heartbeat.Status & reference) != 0)
 			{
 				// True -> put the bit of process[i] down 
 				flip_reference = (0xFF ^ reference);
 				PMData->Heartbeat.Status = (PMData->Heartbeat.Status & flip_reference);
 				ProcessList[i].CrashCount = 0;
-			} 
+			}
 			else
 			{
 				// False -> Increment the counter (heartbeat lost counter)
@@ -98,6 +102,7 @@ int main()
 					{
 						// True -> Shutdown all
 						PMData->Shutdown.Status = 0xFF;
+						break;
 					}
 					else
 					{
@@ -106,21 +111,22 @@ int main()
 						{
 							//True -> Start();
 							ProcessList[i].ProcessName->Start();
-							
+							ProcessList[i].CrashCount = 0;
 						}
 						else
 						{
 							// False -> Kill(); Start();
 							ProcessList[i].ProcessName->Kill();
 							ProcessList[i].ProcessName->Start();
+							ProcessList[i].CrashCount = 0;
 						}
 					}
 				}
-				
+
 			}
 		}
-		
-		
+
+
 		Thread::Sleep(25);
 	}
 
