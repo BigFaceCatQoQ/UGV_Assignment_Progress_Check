@@ -32,7 +32,7 @@ int main()
 
 	array<UGVProcesses>^ ProcessList = gcnew array<UGVProcesses>
 	{
-		{ "Laser", 1, 0, 10, gcnew Process },
+		{ "Laser",   1, 0, 10, gcnew Process },
 		{ "Display", 1, 0, 10, gcnew Process },
 		{ "Vehicle", 1, 0, 10, gcnew Process },
 		{ "GPS",     0, 0, 10, gcnew Process },
@@ -46,6 +46,21 @@ int main()
 	//SM Creation and Seeking access
 	PMObj.SMCreate();
 	PMObj.SMAccess();
+
+	//Setup SM_Laser
+	SMObject LaserObj(_TEXT("SM_Laser"), sizeof(SM_Laser));
+	LaserObj.SMCreate();
+	LaserObj.SMAccess();
+
+	//Setup SM_GPS
+	SMObject GPSObj(_TEXT("SM_GPS"), sizeof(SM_GPS));
+	GPSObj.SMCreate();
+	GPSObj.SMAccess();
+
+	//Setup SM_VehicleControl
+	SMObject VehicleControlObj(_TEXT("SM_VehicleControl"), sizeof(SM_VehicleControl));
+	VehicleControlObj.SMCreate();
+	VehicleControlObj.SMAccess();
 
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 

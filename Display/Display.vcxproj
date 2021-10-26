@@ -142,6 +142,15 @@ turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
   <ItemGroup>
     <ClCompile Include="..\Common\SMObject.cpp" />
     <ClCompile Include="DisplayMain.cpp" />
+    <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="Messages.cpp" />
+    <ClCompile Include="MyVehicle.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="VectorMaths.cpp" />
+    <ClCompile Include="Vehicle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -85,8 +85,17 @@ unsigned long CalculateBlockCRC32(unsigned long ulCount, /* Number of bytes in t
 
 int main()
 {
-	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 	//SM Creation and Seeking access
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+
+	//Setup SM_GPS
+	SMObject GPSObj(_TEXT("SM_GPS"), sizeof(SM_GPS));
+	GPSObj.SMCreate();
+	GPSObj.SMAccess();
+	SM_GPS* GPSData = (SM_GPS*)GPSObj.pData;
 
 	//Declaration
 	double TimeStamp;
@@ -94,8 +103,7 @@ int main()
 	int Shutdown = 0x00;
 
 	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
-	PMObj.SMCreate();
-	PMObj.SMAccess();
+	
 	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
 	while (!PMData->Ready)

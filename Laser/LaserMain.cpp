@@ -19,8 +19,17 @@ using namespace System::Threading;
 
 int main()
 {
-	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
 	//SM Creation and Seeking access
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+
+	//Setup SM_Laser
+	SMObject LaserObj(_TEXT("SM_Laser"), sizeof(SM_Laser));
+	LaserObj.SMCreate();
+	LaserObj.SMAccess();
+	SM_Laser* LaserData = (SM_Laser*)LaserObj.pData;
 
 	//Declaration
 	double TimeStamp;
@@ -28,9 +37,6 @@ int main()
 	int Shutdown = 0x00;
 
 	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
-	PMObj.SMCreate();
-	PMObj.SMAccess();
-	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
 
 	while (!PMData->Ready)
 	{
@@ -123,6 +129,9 @@ int main()
 				Range[i] = System::Convert::ToInt32(StringArray[26 + i], 16);
 				RangeX[i] = Range[i] * sin(i * Resolution * M_PI/180);
 				RangeY[i] = -Range[i] * cos(i * Resolution * M_PI/180);
+
+				LaserData->x[i] = RangeX[i];
+				LaserData->y[i] = RangeY[i];
 
 				Console::WriteLine("(" + RangeX[i] + ", " + RangeY[i] + ")");
 			}
